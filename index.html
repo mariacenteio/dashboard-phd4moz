@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhD4Moz Dashboard — Competências Transversais</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy: #102040;
+      --blue: #2f78c6;
+      --teal: #159987;
+      --green: #52aa60;
+      --gold: #dca53a;
+      --purple: #675ca8;
+      --red: #e76f51;
+      --bg: #f5f8fc;
+      --line: #dde5ef;
+      --ink: #17233b;
+      --card: #ffffff;
+      --sombra: 0 4px 20px rgba(0, 0, 0, .06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    button { font: inherit; }
+
+    /* Cover Page Styles */
+    .cover {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: var(--sombra);
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .cover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cover-institutions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .cover-institutions h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .cover-institutions p {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .cover-logos {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .logo-split {
+      display: flex;
+      gap: 6px;
+    }
+
+    .logo-split svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .logo-split .red { color: var(--red); }
+    .logo-split .yellow { color: var(--gold); fill: currentColor; }
+    .logo-split .blue { color: var(--blue); }
+
+    .cover-body {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cover-body h1 {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .cover-sub {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+
+    .cover-meta {
+      font-size: 15px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .cover-footer {
+      display: flex;
+      justify-content: center;
+      padding-top: 24px;
+      /* Border removed as requested */
+    }
+
+    .cover-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 28px;
+      text-align: center;
+    }
+
+    .cover-card h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .cover-card h4 svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .cover-card p {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .flex { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .justify-center { justify-content: center; }
+    .gap-3 { gap: 12px; }
+    .pt-6 { padding-top: 24px; }
+    .px-4 { padding-left: 16px; padding-right: 16px; }
+    .py-2 { padding-top: 8px; padding-bottom: 8px; }
+    .bg-slate-900 { background-color: var(--navy); }
+    .text-white { color: #ffffff; }
+    .rounded-lg { border-radius: 8px; }
+    .text-xs { font-size: 13px; }
+    .font-semibold { font-weight: 700; }
+    .shadow-sm { box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .cursor-pointer { cursor: pointer; }
+    .hover\:bg-slate-800:hover { background-color: #1a325c; }
+    .items-center { align-items: center; }
+
+    /* Top Navigation Header */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      padding: 12px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+      overflow-x: auto;
+    }
+
+    .brand {
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--navy);
+      margin-right: 12px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--ink);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab:hover {
+      background: #f0f4f9;
+    }
+
+    .tab.active {
+      background: #eaf2ff;
+      color: #17356e;
+    }
+
+    .controls {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .controls button {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .controls button:hover {
+      background: var(--bg);
+    }
+
+    .controls .active {
+      background: var(--navy) !important;
+      color: #fff !important;
+      border-color: var(--navy);
+    }
+
+    .print {
+      background: var(--navy) !important;
+      color: #fff !important;
+    }
+
+    /* Export Options Menu */
+    .export-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .export-btn {
+      background: var(--teal) !important;
+      color: #fff !important;
+      border-color: var(--teal) !important;
+    }
+
+    .export-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 4px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--sombra);
+      min-width: 180px;
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    .export-dropdown:hover .export-menu,
+    .export-menu.show {
+      display: block;
+    }
+
+    .export-item {
+      display: block;
+      width: 100%;
+      padding: 10px 14px;
+      text-align: left;
+      background: none;
+      border: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      border-radius: 0 !important;
+    }
+
+    .export-item:hover {
+      background: #f0f4f9;
+      color: var(--navy);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1480px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.35s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Banners */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1d3569 100%);
+      color: white;
+      padding: 28px 32px;
+      border-radius: 20px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 24px rgba(16, 32, 64, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -30%; right: -5%;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(255, 255, 255, .08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero h1 { font-size: 26px; margin: 4px 0 10px 0; font-weight: 800; }
+    .hero p { color: #dce4f1; max-width: 1100px; font-size: 14.5px; line-height: 1.6; }
+
+    /* Grid Layouts */
+    .grid { display: grid; gap: 18px; }
+    .two { grid-template-columns: 1fr 1fr; }
+    .three { grid-template-columns: repeat(3, 1fr); }
+    .four { grid-template-columns: repeat(4, 1fr); }
+    .five { grid-template-columns: repeat(5, 1fr); }
+
+    /* Cards & Metrics */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+    }
+
+    .metric small {
+      display: block;
+      text-transform: uppercase;
+      color: #71809a;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 32px;
+      margin: 6px 0;
+      color: var(--navy);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .metric span {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .title {
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--navy);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Track/Horizontal bar styling */
+    .hrow {
+      display: grid;
+      grid-template-columns: 200px 1fr 55px;
+      gap: 12px;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 12.5px;
+    }
+
+    .hrow span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    /* Toggle Cursor for Interactive Graphic Cards */
+    .toggle-card {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .toggle-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .track {
+      height: 20px;
+      background: #edf2f7;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .track i {
+      display: block;
+      height: 100%;
+      border-radius: 6px;
+    }
+
+    .blue { background: var(--blue); }
+    .teal { background: var(--teal); }
+    .green { background: var(--green); }
+    .purple { background: var(--purple); }
+    .gold { background: var(--gold); }
+    .red { background: var(--red); }
+
+    /* Year Breakdown Grid */
+    .yeargrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .year {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+    }
+
+    .year h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      color: var(--navy);
+    }
+
+    .year p {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #475569;
+    }
+
+    .year strong {
+      display: block;
+      font-size: 32px;
+      color: var(--green);
+      margin-top: 10px;
+      font-weight: 800;
+    }
+
+    /* Canvas wraps */
+    .canvas-wrap {
+      position: relative;
+      height: 380px;
+      width: 100%;
+    }
+
+    .canvas-doughnut {
+      max-width: 400px;
+      margin: 0 auto;
+      height: 320px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e8edf4;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* Helper notes */
+    .note {
+      padding: 16px 20px;
+      border: 1px solid #dce7f4;
+      border-left: 4px solid var(--blue);
+      border-radius: 12px;
+      background: #f8fbff;
+      line-height: 1.6;
+      font-size: 13.5px;
+      color: #334155;
+    }
+
+    .spacer { margin-top: 20px; }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .five, .four, .three, .two, .yeargrid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      main { padding: 14px; }
+      nav { padding: 10px 12px; }
+      .five, .four, .three, .two, .yeargrid { grid-template-columns: 1fr; }
+      .hrow { grid-template-columns: 120px 1fr 45px; }
+      .brand { display: none; }
+      .canvas-wrap { height: 300px; }
+    }
+
+    /* Print styles */
+    @media print {
+      @page { size: A4 landscape; margin: 8mm; }
+      nav { display: none !important; }
+      main { max-width: none; padding: 0; }
+      .page { display: block !important; page-break-after: always; }
+      .card, .hero { break-inside: avoid; }
+      .canvas-wrap { height: 280px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation Header -->
+<nav>
+  <button class="tab active" data-page="cover"><span data-pt="Capa" data-en="Cover">Capa</span></button>
+  <button class="tab" data-page="about"><span data-pt="Sobre o Projeto" data-en="About Project">Sobre o Projeto</span></button>
+  <button class="tab" data-page="profile"><span data-pt="Perfis dos Estudantes" data-en="Student Profiles">Perfis dos Estudantes</span></button>
+  <button class="tab" data-page="journey"><span data-pt="Fluxo por Etapa" data-en="Flow Stage">Fluxo por Etapa</span></button>
+  <button class="tab" data-page="interests"><span data-pt="Resultados da Formação" data-en="Training Results">Resultados da Formação</span></button>
+  <button class="tab" data-page="engagement"><span data-pt="Participação continuada" data-en="Continued Participation">Participação continuada</span></button>
+  <button class="tab" data-page="profile-results"><span data-pt="Resultados por Perfil" data-en="Results by Profile">Resultados por Perfil</span></button>
+  <button class="tab" data-page="results"><span data-pt="Resultados" data-en="Results">Resultados</span></button>
+  <button class="tab" data-page="data"><span data-pt="Sobre os Dados" data-en="About the Data">Sobre os Dados</span></button>
+  
+  <div class="controls">
+    <button id="pt" class="active">PT</button>
+    <button id="en">EN</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ==================== CAPA ==================== -->
+  <section id="cover" class="page active">
+    <div class="cover">
+      <div class="cover-header">
+        <div class="cover-institutions">
+          <div class="logo-badge moz">UM</div>
+          <div>
+            <h2>Universidade do Minho</h2>
+            <p>Escola de Medicina</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cover-body">
+        <h1 data-pt="PhD4Moz — Dashboard Interativa de Participação em Cursos de Competências Transversais" data-en="PhD4Moz — Interactive Dashboard on Participation in Transversal Skills Courses">PhD4Moz — Dashboard Interativa de Participação em Cursos de Competências Transversais</h1>
+        <p class="cover-sub" style="margin-top: 48px; color: #64748b;" data-pt="Desenvolvimento do Dashboard: Maria de Fátima Gomes Centeio" data-en="Dashboard Development: Maria de Fátima Gomes Centeio">Maria de Fátima Gomes Centeio</p>
+        <p class="cover-meta" data-pt="Mestrado em Humanidades Digitais" data-en="Master's in Digital Humanities">Mestrado em Humanidades Digitais</p>
+        
+        <div class="pt-6 flex flex-wrap justify-center gap-3 no-print" style="margin-top: 36px;">
+          <button onclick="mudarAbaDireta('about')" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition shadow-sm flex items-center cursor-pointer">
+            <span style="margin-right:8px;">📊</span> <span data-pt="Iniciar Exploração" data-en="Start Exploring">Iniciar Exploração</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PERÍODO CENTRALIZADO -->
+      <div class="cover-footer">
+        <div class="cover-card">
+          <h4>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 
+            <span data-pt="Período do Projeto" data-en="Project Period">Período do Projeto</span>
+          </h4>
+          <p>2023 – 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. ABOUT PAGE -->
+  <section id="about" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="kicker" style="text-transform: uppercase; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #93c5fd; margin-bottom: 6px;" data-pt="Enquadramento" data-en="Framework">Enquadramento</div>
+          <h1 data-pt="PhD4Moz" data-en="PhD4Moz">PhD4Moz</h1>
+        </div>
+      </div>
+      <p data-pt="O PhD4Moz é um projeto Erasmus+ coordenado pela Escola de Medicina da Universidade do Minho, numa iniciativa de parceria com a TecMinho, o Karolinska Institutet (KI), e com o apoio voluntário da ORPHEUS, assim como 3 instituições de Moçambique: a Universidade Eduardo Mondlane, a Universidade Pedagógica de Maputo e o Instituto Nacional de Saúde." data-en="PhD4Moz is an Erasmus+ project coordinated by the School of Medicine of the University of Minho, in a partnership initiative with TecMinho, Karolinska Institutet (KI), and with the voluntary support of ORPHEUS, as well as 3 Mozambican institutions: Eduardo Mondlane University, Pedagogical University of Maputo and the National Institute of Health.">
+        O PhD4Moz é um projeto Erasmus+ coordenado pela Escola de Medicina da Universidade do Minho, numa iniciativa de parceria com a TecMinho, o Karolinska Institutet (KI), e com o apoio voluntário da ORPHEUS, assim como 3 instituições de Moçambique: a Universidade Eduardo Mondlane, a Universidade Pedagógica de Maputo e o Instituto Nacional de Saúde.
+      </p>
+      <p style="margin-top:14px" data-pt="O projeto PhD4Moz irá apoiar cerca de 150 estudantes de doutoramento, 70 orientadores e 20 docentes, e irá decorrer de 2023 a 2026." data-en="The PhD4Moz project will support around 150 PhD students, 70 supervisors and 20 teachers, and will run from 2023 to 2026.">
+        O projeto PhD4Moz irá apoiar cerca de 150 estudantes de doutoramento, 70 orientadores e 20 docentes, e irá decorrer de 2023 a 2026.
+      </p>
+    </div>
+
+    <div class="grid four">
+      <div class="card metric"><small data-pt="Programa" data-en="Programme">Programa</small><strong style="font-size:24px">Erasmus+</strong></div>
+      <div class="card metric"><small data-pt="Período" data-en="Period">Período</small><strong style="font-size:24px">2023–2026</strong></div>
+      <div class="card metric"><small data-pt="País" data-en="Country">País</small><strong style="font-size:24px" data-pt="Moçambique" data-en="Mozambique">Moçambique</strong></div>
+      <div class="card metric"><small data-pt="Coordenação" data-en="Coordination">Coordenação</small><strong style="font-size:20px" data-pt="Universidade do Minho" data-en="University of Minho">Universidade do Minho</strong></div>
+    </div>
+
+    <div class="spacer">
+      <div class="card">
+        <div class="title" data-pt="Objetivo do Projeto" data-en="Project Objective">Objetivo do Projeto</div>
+        <p data-pt="Reforçar competências transversais e disciplinares, apoiar estudantes, orientadores e docentes e promover transferência sustentável de capacidades para o sistema de ensino superior e de saúde em Moçambique." data-en="Strengthen transversal and discipline-specific skills, support students, supervisors, and teachers, and promote sustainable capacity transfer to the higher education and health systems in Mozambique.">
+          Reforçar competências transversais e disciplinares, apoiar estudantes, orientadores e docentes e promover transferência sustentável de capacidades para o sistema de ensino superior e de saúde em Moçambique.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PROFILE PAGE -->
+  <section id="profile" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <h1 data-pt="Perfil dos estudantes dos cursos de competências transversais" data-en="Profile of students in transversal skills courses">Perfil dos Estudantes em Cursos de Competências Transversais</h1>
+        </div>
+      </div>
+      <p data-pt="Caracteriza o perfil académico demográfico, académico, científico e geográfico dos estudantes destes cursos." data-en="Characterizes the academic demographic, academic, scientific, and geographical profile of students in these courses.">
+        Caracteriza o perfil académico, demográfico, científico e geográfico dos estudantes destes cursos.
+      </p>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="title" data-pt="Distribuição por Sexo" data-en="Sex Distribution">Distribuição por Sexo</div>
+        <div class="canvas-wrap canvas-doughnut"><canvas id="chartSexoNav"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="title" data-pt="Grau Académico" data-en="Academic Degree">Grau Académico</div>
+        <div class="canvas-wrap"><canvas id="chartGrauNav"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid two spacer">
+      <div class="card">
+        <div class="title" data-pt="Área Científica de Estudo" data-en="Scientific Field of Study">Área Científica de Estudo</div>
+        <div class="canvas-wrap"><canvas id="chartAreaNav"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="title" data-pt="Proveniência Geográfica (Top Províncias)" data-en="Geographical Origin (Top Provinces)">Proveniência Geográfica</div>
+        <div class="canvas-wrap"><canvas id="chartProvinciaNav"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. INTERESTS PAGE (RESULTADOS DA FORMAÇÃO) -->
+  <section id="interests" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <h1 data-pt="Resultados dos Cursos em Competências Transversais" data-en="Results of Transversal Skills Courses">Resultados dos Cursos em Competências Transversais</h1>
+        </div>
+      </div>
+      <p data-pt="Destaque para os cursos mais procurados e análise da procura por temáticas." data-en="Highlights of the most requested courses and training demand breakdown.">
+        Destaque para os cursos mais procurados e análise da procura por temáticas.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="flex flex-wrap gap-4 items-center" style="margin-bottom: 22px;">
+        <span style="font-size: 13px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-right: 12px;" data-pt="Filtrar:" data-en="Filter:">Filtrar:</span>
+        
+        <label class="flex items-center gap-2" style="font-size: 13px; font-weight: 700; color: #334155; white-space: nowrap; margin-right: 20px;">
+          <span data-pt="Ano" data-en="Year" style="margin-right: 6px;">Ano</span>:
+          <select id="filtroAnoCurso" style="padding: 8px 12px; border: 1px solid #dde5ef; border-radius: 8px; font-weight: 600; margin-left: 6px;">
+            <option value="todos">Todos</option>
+          </select>
+        </label>
+
+        <label class="flex items-center gap-2" style="font-size: 13px; font-weight: 700; color: #334155; white-space: nowrap; margin-left: 8px;">
+          <span data-pt="Pesquisar Curso" data-en="Search Course">Pesquisar Curso</span>:
+          <input id="filtroCurso" type="search" placeholder="Ex.: Academic writing using AI, ethics..." style="width: 280px; padding: 8px 12px; border: 1px solid #dde5ef; border-radius: 8px; font-weight: 600; margin-left: 4px;">
+        </label>
+
+        <button id="toggleTabelaBtn" type="button"
+                style="border: 1px solid #dde5ef; background: #fff; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; margin-left: auto;">
+          <span data-pt="🔄 Alternar Gráficos / Tabela" data-en="🔄 Toggle Charts / Table">🔄 Alternar Gráficos / Tabela</span>
+        </button>
+      </div>
+
+      <div class="grid two">
+        <div class="card" id="cardCandSel">
+          <div class="title">
+            <span data-pt="Candidatura vs Seleção" data-en="Application vs Selection">Candidatura vs Seleção</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="chartCandSel"></canvas></div>
+        </div>
+        <div class="card" id="cardPartConc">
+          <div class="title">
+            <span data-pt="Participação vs Conclusão" data-en="Participation vs Completion">Participação vs Conclusão</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="chartPartConc"></canvas></div>
+        </div>
+      </div>
+
+      <div id="tabelaWrapper" style="display: none;" class="spacer">
+        <table>
+          <thead>
+            <tr>
+              <th data-pt="Curso" data-en="Course">Curso</th>
+              <th data-pt="Ano" data-en="Year">Ano</th>
+              <th data-pt="Candidatura" data-en="Application">Candidatura</th>
+              <th data-pt="Seleção" data-en="Selection">Seleção</th>
+              <th data-pt="Participação" data-en="Participation">Participação</th>
+              <th data-pt="Conclusão" data-en="Completion">Conclusão</th>
+              <th data-pt="Taxa de Conclusão" data-en="Completion Rate">Taxa de Conclusão</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyCursos"></tbody>
+        </table>
+      </div>
+
+      <div class="note spacer" id="notaCursos"></div>
+    </div>
+  </section>
+
+  <!-- 5. JOURNEY & FUNNEL PAGE -->
+  <section id="journey" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <h1 data-pt="Fluxo Agregado de Estudantes ao Longo do Projeto" data-en="Aggregate Student Flow Across the Project">Fluxo de Estudantes ao Longo dos Cursos</h1>
+        </div>
+      </div>
+      <p data-pt="Acompanhamento do fluxo dos estudantes (Candidatura → Seleção → Participação → Conclusão) ao longo dos anos." data-en="Tracking student flow (Application → Selection → Participation → Completion) over the three project years.">
+        Acompanhamento do fluxo dos estudantes (Candidatura → Seleção → Participação → Conclusão) ao longo dos anos.
+      </p>
+    </div>
+
+    <!-- KPIs do Funil Reformatados -->
+    <div class="grid four" style="margin-bottom: 20px;">
+      <div class="card metric" style="background: #f8fbff; border: none; box-shadow: inset 4px 0 0 0 var(--blue); border-radius: 12px;">
+        <small data-pt="Candidatura" data-en="Application">Candidatura</small>
+        <strong>1.165</strong>
+        <span style="color: #64748b; font-weight: 600;" data-pt="Total de candidaturas" data-en="Total applications">Total de candidaturas</span>
+      </div>
+      <div class="card metric" style="background: #f8fbff; border: none; box-shadow: inset 4px 0 0 0 var(--teal); border-radius: 12px;">
+        <small data-pt="Seleção" data-en="Selection">Seleção</small>
+        <strong>564</strong>
+        <span style="color: #64748b;" data-pt="48% dos candidatos" data-en="48% of applicants">48% dos candidatos</span>
+      </div>
+      <div class="card metric" style="background: #f8fbff; border: none; box-shadow: inset 4px 0 0 0 var(--navy); border-radius: 12px;">
+        <small data-pt="Participação" data-en="Participation">Participação</small>
+        <strong>445</strong>
+        <span style="color: #64748b;" data-pt="79% dos selecionados" data-en="79% of selected">79% dos selecionados</span>
+      </div>
+      <div class="card metric" style="background: #f8fbff; border: none; box-shadow: inset 4px 0 0 0 var(--green); border-radius: 12px;">
+        <small data-pt="Conclusão" data-en="Completion">Conclusão</small>
+        <strong style="color: var(--green);">378</strong>
+        <span style="color: var(--green);" data-pt="85% dos participantes" data-en="85% of participants">85% dos participantes</span>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="title" data-pt="Funil Geral do Projeto" data-en="Overall Project Funnel">Fluxo de Estudantes por Etapa</div>
+        <div class="canvas-wrap"><canvas id="chartFunilNav"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="title" data-pt="Distribuição por Ano de Candidatura" data-en="Distribution by Application Year">Distribuição por Ano da Primeira Candidatura</div>
+        <div class="canvas-wrap"><canvas id="chartAnoNav"></canvas></div>
+      </div>
+    </div>
+
+    <div class="yeargrid spacer">
+      <div class="year">
+        <h3>2024</h3>
+        <p>Candidaturas: <b>438</b> · Selecionados: <b>339</b></p>
+        <p>Participações: <b>269</b> · Conclusões: <b>220</b></p>
+        <strong>81.8%</strong> <small data-pt="taxa de conclusão" data-en="completion rate">taxa de conclusão</small>
+      </div>
+      <div class="year">
+        <h3>2025</h3>
+        <p>Candidaturas: <b>1128</b> · Selecionados: <b>600</b></p>
+        <p>Participações: <b>474</b> · Conclusões: <b>424</b></p>
+        <strong>89.5%</strong> <small data-pt="taxa de conclusão" data-en="completion rate">taxa de conclusão</small>
+      </div>
+      <div class="year">
+        <h3>2026</h3>
+        <p>Candidaturas: <b>1029</b> · Selecionados: <b>520</b></p>
+        <p>Participações: <b>410</b> · Conclusões: <b>340</b></p>
+        <strong>82.9%</strong> <small data-pt="taxa de conclusão" data-en="completion rate">taxa de conclusão</small>
+      </div>
+    </div>
+
+    <div class="note spacer">
+      <strong data-pt="⚠ Nota metodológica:" data-en="⚠ Methodological note:">⚠ Nota metodológica:</strong>
+      <span data-pt="A redução entre a fase de candidatura e a de seleção decorre estritamente da limitação de vagas disponíveis (a procura superou a oferta), e não de desistências por parte dos estudantes." data-en="The reduction between application and selection stages is strictly due to limited class capacity (demand exceeded offer), rather than student dropouts.">
+        A redução entre a fase de candidatura e a de seleção decorre estritamente da limitação de vagas disponíveis (a procura superou a oferta), e não de desistências por parte dos estudantes.
+      </span>
+    </div>
+  </section>
+
+  <!-- 6. ENGAGEMENT PAGE -->
+  <section id="engagement" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <h1 data-pt="Participação Continuada em Cursos de Competências Transversais" data-en="Continued Participation in Transversal Skills Courses">Participação Continuada em Cursos de Competências Transversais</h1>
+        </div>
+      </div>
+      <p data-pt="Análise da frequência repetida de participantes em múltiplos cursos de competências transversais, como indicador de satisfação e de utilidade percebida da oferta formativa." data-en="Analysis of repeated participation across multiple transversal skills courses, as an indicator of satisfaction and perceived usefulness of the training offer.">
+        Análise da frequência repetida de participantes em múltiplos cursos de competências transversais, como indicador de satisfação e de utilidade percebida da oferta formativa.
+      </p>
+    </div>
+
+    <div class="grid four">
+      <div class="card metric"><small data-pt="Participantes Únicos" data-en="Unique Participants">Participantes Únicos</small><strong>445</strong></div>
+      <div class="card metric"><small data-pt="1 Curso" data-en="1 Course">1 Curso</small><strong>266</strong><span>59.8%</span></div>
+      <div class="card metric"><small data-pt="2+ Cursos" data-en="2+ Courses">2+ Cursos</small><strong>179</strong><span>40.2%</span></div>
+      <div class="card metric"><small data-pt="Média de Cursos / Part." data-en="Avg Courses / Part.">Média de Cursos / Part.</small><strong>2.6</strong></div>
+    </div>
+
+    <div class="grid two spacer">
+      <div class="card">
+        <div class="title" data-pt="Número de Cursos por Participante" data-en="Number of Courses per Participant">Número de Cursos por Participante</div>
+        <div class="hrow"><span>1 Curso</span><div class="track"><i class="purple" style="width:100.0%"></i></div><b>266</b></div>
+        <div class="hrow"><span>2 Cursos</span><div class="track"><i class="purple" style="width:25.2%"></i></div><b>67</b></div>
+        <div class="hrow"><span>3 Cursos</span><div class="track"><i class="purple" style="width:9.8%"></i></div><b>26</b></div>
+        <div class="hrow"><span>4–5 Cursos</span><div class="track"><i class="purple" style="width:11.3%"></i></div><b>30</b></div>
+        <div class="hrow"><span>6+ Cursos</span><div class="track"><i class="purple" style="width:21.1%"></i></div><b>56</b></div>
+      </div>
+      <div class="card">
+        <div class="title" data-pt="Interpretação da Continuidade" data-en="Continuity Interpretation">Interpretação da Continuidade</div>
+        <div class="note">
+          <p data-pt="Cerca de 40.2% dos participantes regressaram para pelo menos uma segunda formação, indicando elevada satisfação e continuidade no percurso do projeto PhD4Moz." data-en="Around 40.2% of participants returned for at least a second training activity, indicating high satisfaction and continuous involvement in the PhD4Moz project.">
+            Cerca de 40.2% dos participantes regressaram para pelo menos uma segunda formação, indicando elevada satisfação e continuidade no percurso do projeto PhD4Moz.
+          </p>
+          <br>
+          <p data-pt="Além disso, 56 investigadores frequentaram 6 ou mais formações, demonstrando a criação de um núcleo de forte capacitação contínua." data-en="In addition, 56 researchers attended 6 or more training sessions, demonstrating the establishment of a highly trained core cohort.">
+            Além disso, 56 investigadores frequentaram 6 ou mais formações, demonstrando a criação de um núcleo de forte capacitação contínua.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6.5 PROFILE RESULTS PAGE -->
+  <section id="profile-results" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <h1 data-pt="Resultados por Perfil de Participantes" data-en="Results by Participant Profile">Resultados por Perfil de Participantes</h1>
+        </div>
+      </div>
+      <p data-pt="Desagregação do desempenho, taxas de conclusão e padrão de envolvimento de acordo com o perfil académico, área de investigação, ano da primeira candidatura e proveniência dos estudantes." data-en="Breakdown of performance, completion rates, and engagement patterns by academic background, research field, first application year, and geographical origin.">
+        Desagregação do desempenho, taxas de conclusão e padrão de envolvimento de acordo com o perfil académico, área de investigação, ano da primeira candidatura e proveniência dos estudantes.
+      </p>
+    </div>
+
+    <div class="grid four">
+      <div class="card metric">
+        <small data-pt="Perfil com Maior Procura" data-en="Highest Demand Profile">Perfil com Maior Procura</small>
+        <strong style="font-size:22px">Mestrado</strong>
+        <span data-pt="459 Candidaturas" data-en="459 Applications">459 Candidaturas</span>
+      </div>
+      <div class="card metric">
+        <small data-pt="Maior Taxa de Conclusão" data-en="Highest Completion Rate">Maior Taxa de Conclusão</small>
+        <strong style="font-size:22px" data-pt="Doutoramento" data-en="PhD Level">Doutoramento</strong>
+        <span>89.2%</span>
+      </div>
+      <div class="card metric">
+        <small data-pt="Área Mais Ativa" data-en="Most Active Field">Área Mais Ativa</small>
+        <strong style="font-size:22px" data-pt="Saúde" data-en="Health">Saúde</strong>
+        <span data-pt="395 Estudantes" data-en="395 Students">395 Estudantes</span>
+      </div>
+      <div class="card metric">
+        <small data-pt="Principal Província" data-en="Top Province">Principal Província</small>
+        <strong style="font-size:22px">Maputo Cidade</strong>
+        <span data-pt="168 Candidaturas" data-en="168 Applications">168 Candidaturas</span>
+      </div>
+    </div>
+
+    <div class="grid two spacer">
+      <div class="card">
+        <div class="title" data-pt="Taxa de Conclusão por Sexo" data-en="Completion Rate by Sex">Taxa de Conclusão por Sexo</div>
+        <div class="hrow"><span data-pt="Feminino" data-en="Female">Feminino</span><div class="track"><i class="teal" style="width:87.4%"></i></div><b>87.4%</b></div>
+        <div class="hrow"><span data-pt="Masculino" data-en="Male">Masculino</span><div class="track"><i class="blue" style="width:84.1%"></i></div><b>84.1%</b></div>
+      </div>
+      <div class="card">
+        <div class="title" data-pt="Taxa de Conclusão por Grau Académico" data-en="Completion Rate by Academic Degree">Taxa de Conclusão por Grau Académico</div>
+        <div class="hrow"><span>Doutoramento</span><div class="track"><i class="green" style="width:89.2%"></i></div><b>89.2%</b></div>
+        <div class="hrow"><span>Mestrado</span><div class="track"><i class="green" style="width:84.5%"></i></div><b>84.5%</b></div>
+        <div class="hrow"><span>Licenciatura</span><div class="track"><i class="green" style="width:81.0%"></i></div><b>81.0%</b></div>
+        <div class="hrow"><span>Outros</span><div class="track"><i class="green" style="width:78.4%"></i></div><b>78.4%</b></div>
+      </div>
+    </div>
+
+    <div class="spacer">
+      <div class="card">
+        <div class="title" data-pt="Análise do Perfil dos Participantes" data-en="Participant Profile Analysis">Análise do Perfil dos Participantes</div>
+        <div class="note">
+          • <strong data-pt="Análise por Sexo:" data-en="Analysis by Sex:">Análise por Sexo:</strong> <span data-pt="As participantes do sexo feminino apresentam uma taxa de conclusão ligeiramente superior (87.4%) em comparação com o sexo masculino (84.1%)." data-en="Female participants show a slightly higher completion rate (87.4%) compared to male participants (84.1%).">As participantes do sexo feminino apresentam uma taxa de conclusão ligeiramente superior (87.4%) em comparação com o sexo masculino (84.1%).</span><br><br>
+          • <strong data-pt="Estudantes de Doutoramento:" data-en="PhD Students:">Estudantes de Doutoramento:</strong> <span data-pt="Apresentam a maior taxa de conclusão (89,2%), com especial foco em cursos como &lt;em&gt;Academic writing using AI&lt;/em&gt; e &lt;em&gt;Research ethics and integrity&lt;/em&gt;." data-en="Show the highest completion rate (89.2%), with particular focus on courses such as &lt;em&gt;Academic writing using AI&lt;/em&gt; and &lt;em&gt;Research ethics and integrity&lt;/em&gt;.">Apresentam a maior taxa de conclusão (89,2%), com especial foco em cursos como <em>Academic writing using AI</em> e <em>Research ethics and integrity</em>.</span><br><br>
+          • <strong data-pt="Distribuição por Área:" data-en="Field Distribution:">Distribuição por Área:</strong> <span data-pt="A área da Saúde lidera a participação (395 estudantes), seguida pela área da Educação e Ciência Ambiental." data-en="Health sciences leads participation (395 students), followed by Education and Environmental Sciences.">A área da Saúde lidera a participação (395 estudantes), seguida pela área da Educação e Ciência Ambiental.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. RESULTS PAGE -->
+  <section id="results" class="page">
+    <div class="hero">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <h1 data-pt="Resultados e Evidência" data-en="Results & Evidence">Resultados e Evidência</h1>
+        </div>
+      </div>
+      <p data-pt="Síntese global orientada para apresentação institucional, monitorização e relatórios de avaliação." data-en="Global summary designed for institutional presentation, monitoring, and evaluation reporting.">
+        Síntese global orientada para apresentação institucional, monitorização e relatórios de avaliação.
+      </p>
+    </div>
+
+    <div class="grid four">
+      <div class="card metric"><small data-pt="Participantes Únicos" data-en="Unique Participants">Participantes Únicos</small><strong>445</strong></div>
+      <div class="card metric"><small data-pt="Cursos Oferecidos" data-en="Courses Delivered">Cursos Oferecidos</small><strong>60</strong></div>
+      <div class="card metric"><small data-pt="Conclusões de Cursos" data-en="Course Completions">Conclusões de Cursos</small><strong>984</strong></div>
+      <div class="card metric"><small data-pt="Taxa Global Conclusão" data-en="Overall Completion Rate">Taxa Global Conclusão</small><strong>85.3%</strong></div>
+    </div>
+
+    <div class="grid two spacer">
+      <div class="card">
+        <div class="title" data-pt="Principais Conclusões" data-en="Main Takeaways">Principais Conclusões</div>
+        <div class="note">
+          • <strong data-pt="Elevada Procura (Impacto de Alcance):" data-en="High Demand (Reach Impact):">Elevada Procura (Impacto de Alcance):</strong> 
+          <span data-pt="A procura excedeu sistematicamente o número de vagas em todos os anos (cerca de 2,1 candidatos por vaga), comprovando a pertinência da oferta formativa." data-en="Demand systematically exceeded the number of vacancies every year (around 2.1 applicants per seat), proving the relevance of the training offer.">
+            A procura excedeu sistematicamente o número de vagas em todos os anos (cerca de 2,1 candidatos por vaga), comprovando a pertinência da oferta formativa.
+          </span><br><br>
+          
+          • <strong data-pt="Elevada Eficácia (Impacto de Aprendizagem):" data-en="High Effectiveness (Learning Impact):">Elevada Eficácia (Impacto de Aprendizagem):</strong> 
+          <span data-pt="A taxa global de conclusão de 85,3% mantém-se consistentemente alta, indicando elevado compromisso dos participantes e eficácia do modelo de formação." data-en="The overall completion rate of 85.3% remains consistently high, indicating high participant commitment and effectiveness of the training model.">
+            A taxa global de conclusão de 85,3% mantém-se consistentemente alta, indicando elevado compromisso dos participantes e eficácia do modelo de formação.
+          </span><br><br>
+          
+          • <strong data-pt="Abrangência Institucional:" data-en="Institutional Coverage:">Abrangência Institucional:</strong> 
+          <span data-pt="O projeto atingiu 10 instituições de ensino superior e investigação (UEM, UP-MAPUTO, UCM, INS, entre outras), demonstrando um alcance nacional." data-en="The project reached 10 higher education and research institutions (UEM, UP-M, UCM, INS, among others), demonstrating national reach.">
+            O projeto atingiu 10 instituições de ensino superior e investigação (UEM, UP-MAPUTO, UCM, INS, entre outras), demonstrando um alcance nacional.
+          </span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="title" data-pt="Limites da Evidência" data-en="Evidence Limits">Limites da Evidência</div>
+        <div class="note" data-pt="Os dados demonstrados medem diretamente alcance, procura, participação, continuidade e conclusão do programa. Não avaliam diretamente os efeitos de longo prazo na taxa de conclusão de teses doutorais, produção científica e carreiras dos beneficiários." data-en="The data directly measure project reach, demand, participation, repeat engagement, and completion. They do not directly measure long-term effects on doctoral completion rates, scientific publication output, or career progression.">
+          Os dados demonstrados medem diretamente alcance, procura, participação, continuidade e conclusão do programa. Não avaliam diretamente os efeitos de longo prazo na taxa de conclusão de teses doutorais, produção científica e carreiras dos beneficiários.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. ABOUT THE DATA PAGE -->
+  <section id="data" class="page">
+    <div class="hero">
+      <div class="kicker" style="text-transform: uppercase; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #93c5fd; margin-bottom: 6px;" data-pt="Sobre os Dados" data-en="About the Data">Sobre os Dados</div>
+      <h1 data-pt="Origem, Qualidade e Proteção dos Dados" data-en="Data Origin, Quality and Protection">Origem, Qualidade e Proteção dos Dados</h1>
+      <p data-pt="Informação sobre a origem, preparação, cobertura e qualidade dos dados utilizados na dashboard, bem como as condições de proteção e confidencialidade aplicáveis." data-en="Information on the origin, preparation, coverage, and quality of the data used in the dashboard, as well as applicable protection and confidentiality conditions.">
+        Informação sobre a origem, preparação, cobertura e qualidade dos dados utilizados na dashboard, bem como as condições de proteção e confidencialidade aplicáveis.
+      </p>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="title" data-pt="Origem dos Dados" data-en="Data Origin">Origem dos Dados</div>
+        <div class="note">
+          <p data-pt="Os dados apresentados são provenientes dos registos de candidatura, seleção, participação e conclusão dos cursos de competências transversais do projeto PhD4Moz, recolhidos e agregados pela coordenação do projeto." data-en="The data presented come from the application, selection, participation, and completion records of the PhD4Moz transversal skills courses, collected and aggregated by the project coordination.">
+            Os dados apresentados são provenientes dos registos de candidatura, seleção, participação e conclusão dos cursos de competências transversais do projeto PhD4Moz, recolhidos e agregados pela coordenação do projeto.
+          </p>
+          <br>
+          <p data-pt="O período de referência abrange os anos letivos de 2023 a 2026, correspondendo aos três anos de execução do projeto." data-en="The reference period covers the academic years 2023 to 2026, corresponding to the three years of project execution.">
+            O período de referência abrange os anos letivos de 2023 a 2026, correspondendo aos três anos de execução do projeto.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title" data-pt="Preparação e Qualidade" data-en="Preparation and Quality">Preparação e Qualidade</div>
+        <div class="note">
+          <p data-pt="Os dados foram sujeitos a processos de limpeza, normalização e agregação, garantindo a consistência entre candidaturas, seleções, participações e conclusões. A análise privilegia métricas agregadas." data-en="The data underwent cleaning, normalization, and aggregation processes, ensuring consistency between applications, selections, participations, and completions. The analysis prioritizes aggregated metrics.">
+            Os dados foram sujeitos a processos de limpeza, normalização e agregação, garantindo a consistência entre candidaturas, seleções, participações e conclusões. A análise privilegia métricas agregadas.
+          </p>
+          <br>
+          <p data-pt="Sempre que possível, os resultados são apresentados de forma desagregada por ano, sexo, grau académico e área científica, permitindo uma leitura mais fina dos padrões de participação e conclusão." data-en="Wherever possible, results are presented disaggregated by year, sex, academic degree, and scientific field, allowing a finer reading of participation and completion patterns.">
+            Sempre que possível, os resultados são apresentados de forma desagregada por ano, sexo, grau académico e área científica, permitindo uma leitura mais fina dos padrões de participação e conclusão.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card spacer">
+      <div class="title" data-pt="Proteção e Confidencialidade" data-en="Protection and Confidentiality">Proteção e Confidencialidade</div>
+      <div class="note">
+        <p data-pt="Por razões de proteção de dados e confidencialidade, os dados individuais dos estudantes não são disponibilizados através desta dashboard. Todos os resultados apresentados são agregados, impossibilitando a identificação de participantes individuais." data-en="For data protection and confidentiality reasons, individual student data are not made available through this dashboard. All results presented are aggregated, making it impossible to identify individual participants.">
+          Por razões de proteção de dados e confidencialidade, os dados individuais dos estudantes não são disponibilizados através desta dashboard. Todos os resultados apresentados são agregados, impossibilitando a identificação de participantes individuais.
+        </p>
+        <br>
+        <p data-pt="A informação é disponibilizada exclusivamente para fins de monitorização, avaliação e comunicação institucional no âmbito do projeto PhD4Moz, em conformidade com as normas aplicáveis de proteção de dados." data-en="The information is made available exclusively for monitoring, evaluation, and institutional communication purposes within the scope of the PhD4Moz project, in compliance with applicable data protection regulations.">
+          A informação é disponibilizada exclusivamente para fins de monitorização, avaliação e comunicação institucional no âmbito do projeto PhD4Moz, em conformidade com as normas aplicáveis de proteção de dados.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* Global Chart References */
+let chartFunilNavInst = null;
+let chartAnoNavInst = null;
+let chartProvinciaNavInst = null;
+let chartSexoNavInst = null;
+let chartGrauNavInst = null;
+let chartAreaNavInst = null;
+
+/* Navigation Tabs Logic */
+const tabs = document.querySelectorAll('.tab');
+const pages = document.querySelectorAll('.page');
+
+function mudarAbaDireta(pageId) {
+  tabs.forEach(t => t.classList.remove('active'));
+  pages.forEach(p => p.classList.remove('active'));
+  
+  const targetTab = document.querySelector(`.tab[data-page="${pageId}"]`);
+  const targetPage = document.getElementById(pageId);
+  
+  if (targetTab) targetTab.classList.add('active');
+  if (targetPage) targetPage.classList.add('active');
+
+  // Atualiza ou renderiza os gráficos específicos quando a aba se torna visível
+  if (pageId === 'interests') {
+    setTimeout(() => {
+      if (window.renderCourseResults) window.renderCourseResults();
+      window.dispatchEvent(new Event('resize'));
+    }, 50);
+  } else if (pageId === 'journey') {
+    setTimeout(() => {
+      if (chartFunilNavInst) chartFunilNavInst.resize();
+      if (chartAnoNavInst) chartAnoNavInst.resize();
+      window.dispatchEvent(new Event('resize'));
+    }, 50);
+  } else if (pageId === 'profile') {
+    setTimeout(() => {
+      if (chartSexoNavInst) chartSexoNavInst.resize();
+      if (chartGrauNavInst) chartGrauNavInst.resize();
+      if (chartAreaNavInst) chartAreaNavInst.resize();
+      if (chartProvinciaNavInst) chartProvinciaNavInst.resize();
+      window.dispatchEvent(new Event('resize'));
+    }, 50);
+  }
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Export Functions */
+function exportarAbaPDF() {
+  window.print();
+}
+
+function exportarDadosCSV() {
+  const activePage = document.querySelector('.page.active');
+  if (!activePage) return;
+
+  const pageId = activePage.id;
+  let csvContent = "data:text/csv;charset=utf-8,";
+
+  if (pageId === 'about') {
+    csvContent += "Indicador,Valor\n";
+    csvContent += "Programa,Erasmus+\n";
+    csvContent += "Periodo,2023-2026\n";
+    csvContent += "Pais,Moçambique\n";
+    csvContent += "Coordenacao,Universidade do Minho\n";
+  } else if (pageId === 'profile') {
+    csvContent += "Categoria,Item,Valor\n";
+    csvContent += "Sexo,Feminino,354\n";
+    csvContent += "Sexo,Masculino,811\n";
+    csvContent += "Grau,Mestrado,459\n";
+    csvContent += "Grau,Doutoramento,362\n";
+    csvContent += "Grau,Licenciatura,236\n";
+    csvContent += "Grau,Outro,108\n";
+  } else if (pageId === 'journey') {
+    csvContent += "Etapa,Valor\n";
+    csvContent += "Candidatura,1165\n";
+    csvContent += "Seleção,564\n";
+    csvContent += "Participação,445\n";
+    csvContent += "Conclusão,378\n";
+  } else if (pageId === 'interests') {
+    csvContent += "Curso,Ano,Candidaturas,Selecao,Participacoes,Conclusoes,TaxaConclusao\n";
+    csvContent += "Academic writing using AI,2026,125,30,28,21,75.0%\n";
+    csvContent += "Career management 2nd Edition,2025,100,28,24,20,83.3%\n";
+    csvContent += "Systematic reviews and meta-analysis,2026,98,28,24,21,87.5%\n";
+    csvContent += "How to use word in research,2025,96,25,21,18,85.7%\n";
+    csvContent += "Identification of funding sources for science,2026,93,22,20,19,95.0%\n";
+    csvContent += "Research ethics and integrity,2025,91,22,20,20,100.0%\n";
+    csvContent += "Abstract writing using original data,2026,88,25,22,17,77.3%\n";
+    csvContent += "Career management in health science research,2025,80,28,25,22,88.0%\n";
+    csvContent += "Identification of funding sources for science,2025,79,25,24,24,100.0%\n";
+    csvContent += "Plagiarism,2026,71,28,26,20,76.9%\n";
+  } else if (pageId === 'engagement') {
+    csvContent += "Indicador,Valor\n";
+    csvContent += "Participantes Unicos,445\n";
+    csvContent += "1 Curso,266\n";
+    csvContent += "2+ Cursos,179\n";
+    csvContent += "Media Cursos por Participante,2.6\n";
+  } else if (pageId === 'results') {
+    csvContent += "Indicador,Valor\n";
+    csvContent += "Participantes Unicos,445\n";
+    csvContent += "Cursos Emissao,60\n";
+    csvContent += "Conclusoes,984\n";
+    csvContent += "Taxa Global Conclusao,85.3%\n";
+  } else if (pageId === 'data') {
+    csvContent += "Secao,Conteudo\n";
+    csvContent += "Origem dos Dados,Registos de candidatura selecao participacao e conclusao PhD4Moz (2023-2026)\n";
+    csvContent += "Preparacao e Qualidade,Dados limpos e agregados por ano sexo grau e area\n";
+    csvContent += "Protecao e Confidencialidade,Dados 100% agregados e confidenciais\n";
+  }
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `phd4moz_dados_${pageId}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    mudarAbaDireta(btn.dataset.page);
+  });
+});
+
+/* Multi-language (PT/EN) Switcher */
+function setLanguage(lang) {
+  document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+  document.getElementById('pt').classList.toggle('active', lang === 'pt');
+  document.getElementById('en').classList.toggle('active', lang === 'en');
+}
+
+document.getElementById('pt').onclick = () => setLanguage('pt');
+document.getElementById('en').onclick = () => setLanguage('en');
+
+/* Chart.js Configuration & Rendering */
+const PALETTE = {
+  navy: '#102040',
+  blue: '#2f78c6',
+  teal: '#159987',
+  green: '#52aa60',
+  gold: '#dca53a',
+  purple: '#675ca8',
+  red: '#e76f51',
+  gray: '#64748b'
+};
+
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.font.family = "'Segoe UI', Inter, system-ui, sans-serif";
+  Chart.defaults.font.size = 12.5;
+  Chart.defaults.color = '#334155';
+}
+
+const TOOLTIP = {
+  backgroundColor: 'rgba(16, 32, 64, 0.92)',
+  titleFont: { size: 13, weight: 'bold' },
+  bodyFont: { size: 12 },
+  padding: 10,
+  cornerRadius: 8
+};
+
+function initGlobalCharts() {
+  if (typeof Chart === 'undefined') return;
+
+  /* 1. Provinces Chart */
+  const elProv = document.getElementById('chartProvinciaNav');
+  if (elProv && !chartProvinciaNavInst) {
+    chartProvinciaNavInst = new Chart(elProv, {
+      type: 'bar',
+      data: {
+        labels: ['Maputo Cidade', 'Maputo Província', 'Nampula', 'Inhambane', 'Sofala', 'Zambézia', 'Gaza', 'Tete', 'Cabo Delgado', 'Niassa', 'Manica'],
+        datasets: [{
+          data: [168, 123, 36, 21, 20, 18, 18, 15, 13, 12, 11],
+          backgroundColor: PALETTE.blue,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: TOOLTIP },
+        scales: {
+          x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  /* 3. Gender Chart */
+  const elSexo = document.getElementById('chartSexoNav');
+  if (elSexo && !chartSexoNavInst) {
+    chartSexoNavInst = new Chart(elSexo, {
+      type: 'doughnut',
+      data: {
+        labels: ['Feminino', 'Masculino'],
+        datasets: [{
+          data: [354, 811],
+          backgroundColor: [PALETTE.teal, PALETTE.blue],
+          borderColor: '#ffffff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
+          tooltip: TOOLTIP
+        }
+      }
+    });
+  }
+
+  /* 4. Degree Chart */
+  const elGrau = document.getElementById('chartGrauNav');
+  if (elGrau && !chartGrauNavInst) {
+    chartGrauNavInst = new Chart(elGrau, {
+      type: 'bar',
+      data: {
+        labels: ['Mestrado', 'Doutoramento', 'Licenciatura', 'Outro'],
+        datasets: [{
+          data: [459, 362, 236, 108],
+          backgroundColor: [PALETTE.navy, PALETTE.blue, PALETTE.teal, PALETTE.gray],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: TOOLTIP },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  /* 5. Field of Study Chart */
+  const elArea = document.getElementById('chartAreaNav');
+  if (elArea && !chartAreaNavInst) {
+    chartAreaNavInst = new Chart(elArea, {
+      type: 'bar',
+      data: {
+        labels: ['Saúde', 'Educação', 'Ambiente', 'Agricultura', 'Gestão', 'Direito', 'Ciências Sociais', 'Comunicação', 'Engenharia', 'Economia'],
+        datasets: [{
+          data: [395, 197, 82, 19, 18, 16, 14, 12, 12, 12],
+          backgroundColor: PALETTE.teal,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: TOOLTIP },
+        scales: {
+          x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  /* 6. Funnel Chart */
+  const funnelData = [1165, 564, 445, 378];
+  const maxFunnelVal = 1165;
+  const funnelLabels = [
+    'Candidatura: 1165',
+    'Seleção: 564',
+    'Participação: 445',
+    'Conclusão: 378'
+  ];
+
+  const funnelRanges = funnelData.map(val => {
+    const offset = (maxFunnelVal - val) / 2;
+    return [offset, offset + val];
+  });
+
+  const elFunil = document.getElementById('chartFunilNav');
+  if (elFunil && !chartFunilNavInst) {
+    chartFunilNavInst = new Chart(elFunil, {
+      type: 'bar',
+      data: {
+        labels: funnelLabels,
+        datasets: [{
+          data: funnelRanges,
+          backgroundColor: [PALETTE.blue, PALETTE.teal, PALETTE.navy, PALETTE.green],
+          borderRadius: 4,
+          barThickness: 28
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { left: 10, right: 20, top: 10, bottom: 10 }
+        },
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...TOOLTIP,
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            displayColors: false,
+            callbacks: {
+              label: function(ctx) {
+                const idx = ctx.dataIndex;
+                const rawVal = funnelData[idx];
+                if (idx === 0) return ` Total: ${rawVal} (100%)`;
+                const prev = funnelData[idx - 1];
+                const taxa = Math.round((rawVal / prev) * 100);
+                return ` Total: ${rawVal} (${taxa}% da etapa anterior)`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { min: 0, max: maxFunnelVal, display: false },
+          y: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { font: { size: 11.5, weight: '600' }, color: '#334155', padding: 8 }
+          }
+        }
+      }
+    });
+  }
+
+  /* 7. Year Chart */
+  const elAno = document.getElementById('chartAnoNav');
+  if (elAno && !chartAnoNavInst) {
+    chartAnoNavInst = new Chart(elAno, {
+      type: 'bar',
+      data: {
+        labels: ['2024', '2025', '2026'],
+        datasets: [{
+          data: [176, 586, 403],
+          backgroundColor: [PALETTE.navy, PALETTE.blue, PALETTE.teal],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: TOOLTIP },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', initGlobalCharts);
+} else {
+  initGlobalCharts();
+}
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  const COURSE_DATA = [
+    { "Curso": "Academia writing using AI", "Ano": 2026, "Candidatura": 125, "Seleção": 30, "Participação": 28, "Conclusão": 21, "Taxa de Conclusão": 75.0 },
+    { "Curso": "Career management 2nd Edition", "Ano": 2025, "Candidatura": 100, "Seleção": 31, "Participação": 24, "Conclusão": 20, "Taxa de Conclusão": 83.3 },
+    { "Curso": "Systematic reviews and meta-analysis", "Ano": 2026, "Candidatura": 98, "Seleção": 26, "Participação": 24, "Conclusão": 21, "Taxa de Conclusão": 87.5 },
+    { "Curso": "How to use word in research", "Ano": 2025, "Candidatura": 96, "Seleção": 22, "Participação": 21, "Conclusão": 18, "Taxa de Conclusão": 85.7 },
+    { "Curso": "Identification of funding sources for science", "Ano": 2026, "Candidatura": 93, "Seleção": 30, "Participação": 20, "Conclusão": 19, "Taxa de Conclusão": 95.0 },
+    { "Curso": "Research ethics and integrity", "Ano": 2025, "Candidatura": 91, "Seleção": 32, "Participação": 20, "Conclusão": 20, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Abstract writing using original data", "Ano": 2026, "Candidatura": 88, "Seleção": 22, "Participação": 22, "Conclusão": 17, "Taxa de Conclusão": 77.3 },
+    { "Curso": "Career management in health science research", "Ano": 2025, "Candidatura": 80, "Seleção": 26, "Participação": 25, "Conclusão": 22, "Taxa de Conclusão": 88.0 },
+    { "Curso": "Identification of funding sources for science", "Ano": 2025, "Candidatura": 79, "Seleção": 28, "Participação": 24, "Conclusão": 24, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Basic Digital Tools", "Ano": 2026, "Candidatura": 71, "Seleção": 30, "Participação": 19, "Conclusão": 19, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Plagiarism", "Ano": 2026, "Candidatura": 71, "Seleção": 31, "Participação": 26, "Conclusão": 20, "Taxa de Conclusão": 76.9 },
+    { "Curso": "How to use Power-Point in research", "Ano": 2026, "Candidatura": 65, "Seleção": 18, "Participação": 16, "Conclusão": 13, "Taxa de Conclusão": 81.2 },
+    { "Curso": "Abstract writing Portuguese and English", "Ano": 2025, "Candidatura": 58, "Seleção": 37, "Participação": 23, "Conclusão": 23, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Digital tools for teaching-learning and research", "Ano": 2025, "Candidatura": 58, "Seleção": 29, "Participação": 21, "Conclusão": 21, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Academic writing with artificial inteligence", "Ano": 2024, "Candidatura": 56, "Seleção": 47, "Participação": 38, "Conclusão": 19, "Taxa de Conclusão": 50.0 },
+    { "Curso": "Habits that boost success", "Ano": 2026, "Candidatura": 55, "Seleção": 30, "Participação": 15, "Conclusão": 9, "Taxa de Conclusão": 60.0 },
+    { "Curso": "Bio-matemathics", "Ano": 2025, "Candidatura": 52, "Seleção": 25, "Participação": 16, "Conclusão": 16, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Oral presentation", "Ano": 2025, "Candidatura": 52, "Seleção": 29, "Participação": 27, "Conclusão": 27, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Organization of data and documents", "Ano": 2026, "Candidatura": 51, "Seleção": 26, "Participação": 17, "Conclusão": 15, "Taxa de Conclusão": 88.2 },
+    { "Curso": "Reference management and citation", "Ano": 2025, "Candidatura": 45, "Seleção": 28, "Participação": 28, "Conclusão": 28, "Taxa de Conclusão": 100.0 },
+    { "Curso": "How to use Excel in research 1st Edition", "Ano": 2024, "Candidatura": 45, "Seleção": 21, "Participação": 17, "Conclusão": 15, "Taxa de Conclusão": 88.2 },
+    { "Curso": "Bio-matemathics", "Ano": 2026, "Candidatura": 44, "Seleção": 37, "Participação": 30, "Conclusão": 25, "Taxa de Conclusão": 83.3 },
+    { "Curso": "Conflict management", "Ano": 2025, "Candidatura": 44, "Seleção": 31, "Participação": 31, "Conclusão": 19, "Taxa de Conclusão": 61.3 },
+    { "Curso": "Successful grant proposal writing", "Ano": 2025, "Candidatura": 43, "Seleção": 16, "Participação": 14, "Conclusão": 14, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Career management (in health science research)", "Ano": 2026, "Candidatura": 42, "Seleção": 30, "Participação": 27, "Conclusão": 24, "Taxa de Conclusão": 88.9 },
+    { "Curso": "Leadership and teambuilding", "Ano": 2026, "Candidatura": 42, "Seleção": 34, "Participação": 22, "Conclusão": 14, "Taxa de Conclusão": 63.6 },
+    { "Curso": "Systematic reviews", "Ano": 2025, "Candidatura": 42, "Seleção": 15, "Participação": 13, "Conclusão": 12, "Taxa de Conclusão": 92.3 },
+    { "Curso": "Interpersonal communication", "Ano": 2025, "Candidatura": 41, "Seleção": 26, "Participação": 15, "Conclusão": 15, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Comunication and dissemination of research", "Ano": 2024, "Candidatura": 41, "Seleção": 17, "Participação": 17, "Conclusão": 17, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Self-management strategies", "Ano": 2025, "Candidatura": 38, "Seleção": 20, "Participação": 18, "Conclusão": 12, "Taxa de Conclusão": 66.7 },
+    { "Curso": "How to use Excel in research 2nd Edition", "Ano": 2024, "Candidatura": 36, "Seleção": 24, "Participação": 18, "Conclusão": 17, "Taxa de Conclusão": 94.4 },
+    { "Curso": "Science communication through social media", "Ano": 2025, "Candidatura": 31, "Seleção": 28, "Participação": 24, "Conclusão": 22, "Taxa de Conclusão": 91.7 },
+    { "Curso": "Abstract writing (using Portuguese language)", "Ano": 2024, "Candidatura": 31, "Seleção": 23, "Participação": 19, "Conclusão": 19, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Research ethics and integrity", "Ano": 2026, "Candidatura": 30, "Seleção": 26, "Participação": 21, "Conclusão": 18, "Taxa de Conclusão": 85.7 },
+    { "Curso": "Time management strategies", "Ano": 2025, "Candidatura": 29, "Seleção": 29, "Participação": 21, "Conclusão": 21, "Taxa de Conclusão": 100.0 },
+    { "Curso": "How to use power-point in research", "Ano": 2024, "Candidatura": 29, "Seleção": 22, "Participação": 20, "Conclusão": 16, "Taxa de Conclusão": 80.0 },
+    { "Curso": "Oral presentation", "Ano": 2026, "Candidatura": 28, "Seleção": 28, "Participação": 23, "Conclusão": 23, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Critical analysis of scientific papers", "Ano": 2026, "Candidatura": 27, "Seleção": 27, "Participação": 26, "Conclusão": 15, "Taxa de Conclusão": 57.7 },
+    { "Curso": "How to use Power-Point in research", "Ano": 2025, "Candidatura": 27, "Seleção": 27, "Participação": 22, "Conclusão": 17, "Taxa de Conclusão": 77.3 },
+    { "Curso": "Abstract writing (using English language)", "Ano": 2024, "Candidatura": 27, "Seleção": 23, "Participação": 13, "Conclusão": 13, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Cultural Sensibility, inclusion and comununity eng", "Ano": 2025, "Candidatura": 26, "Seleção": 26, "Participação": 21, "Conclusão": 18, "Taxa de Conclusão": 85.7 },
+    { "Curso": "How to use Excel in research", "Ano": 2025, "Candidatura": 26, "Seleção": 26, "Participação": 15, "Conclusão": 10, "Taxa de Conclusão": 66.7 },
+    { "Curso": "Public relations and protocol", "Ano": 2025, "Candidatura": 26, "Seleção": 26, "Participação": 14, "Conclusão": 13, "Taxa de Conclusão": 92.9 },
+    { "Curso": "Good Laboratory Clinical Practices", "Ano": 2024, "Candidatura": 25, "Seleção": 25, "Participação": 14, "Conclusão": 5, "Taxa de Conclusão": 35.7 },
+    { "Curso": "STATA", "Ano": 2025, "Candidatura": 24, "Seleção": 24, "Participação": 19, "Conclusão": 14, "Taxa de Conclusão": 73.7 },
+    { "Curso": "How to use word in research", "Ano": 2024, "Candidatura": 24, "Seleção": 24, "Participação": 17, "Conclusão": 13, "Taxa de Conclusão": 76.5 },
+    { "Curso": "Rstudio", "Ano": 2024, "Candidatura": 24, "Seleção": 23, "Participação": 19, "Conclusão": 19, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Conflict Management", "Ano": 2024, "Candidatura": 23, "Seleção": 23, "Participação": 18, "Conclusão": 11, "Taxa de Conclusão": 61.1 },
+    { "Curso": "Reference management and citation", "Ano": 2026, "Candidatura": 22, "Seleção": 22, "Participação": 18, "Conclusão": 15, "Taxa de Conclusão": 83.3 },
+    { "Curso": "Basics on programming language Python", "Ano": 2026, "Candidatura": 21, "Seleção": 21, "Participação": 14, "Conclusão": 14, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Successful grant proposal writing", "Ano": 2026, "Candidatura": 21, "Seleção": 21, "Participação": 15, "Conclusão": 15, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Time management strategies", "Ano": 2024, "Candidatura": 21, "Seleção": 21, "Participação": 18, "Conclusão": 17, "Taxa de Conclusão": 94.4 },
+    { "Curso": "Time management strategies", "Ano": 2026, "Candidatura": 20, "Seleção": 20, "Participação": 18, "Conclusão": 14, "Taxa de Conclusão": 77.8 },
+    { "Curso": "Leadership and Teambuilding", "Ano": 2025, "Candidatura": 20, "Seleção": 19, "Participação": 18, "Conclusão": 18, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Organization of data, documents and emails", "Ano": 2024, "Candidatura": 18, "Seleção": 9, "Participação": 9, "Conclusão": 9, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Project management tools (MS Project)", "Ano": 2026, "Candidatura": 15, "Seleção": 11, "Participação": 9, "Conclusão": 9, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Habits that boost success", "Ano": 2024, "Candidatura": 13, "Seleção": 13, "Participação": 11, "Conclusão": 11, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Study Design", "Ano": 2024, "Candidatura": 11, "Seleção": 11, "Participação": 9, "Conclusão": 9, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Data management (RedCAP)", "Ano": 2024, "Candidatura": 8, "Seleção": 7, "Participação": 7, "Conclusão": 7, "Taxa de Conclusão": 100.0 },
+    { "Curso": "Good Clinical Practices", "Ano": 2024, "Candidatura": 6, "Seleção": 6, "Participação": 5, "Conclusão": 3, "Taxa de Conclusão": 60.0 }
+  ];
+
+  let chartCandSel = null, chartPartConc = null, currentLangCurso = 'pt';
+  let anosJaPreenchidos = false;
+
+  function getEtapaLabel(pt, lang) {
+    const m = { 'Candidatura': 'Application', 'Seleção': 'Selection', 'Participação': 'Participation', 'Conclusão': 'Completion' };
+    return lang === 'en' ? (m[pt] || pt) : pt;
+  }
+
+  function filtrarDados() {
+    const s = document.getElementById('filtroAnoCurso');
+    const i = document.getElementById('filtroCurso');
+    const ano = s ? s.value : 'todos';
+    const txt = i ? i.value.trim().toLowerCase() : '';
+    return COURSE_DATA.filter(r => {
+      const okAno = (ano === 'todos' || !ano) || (String(r.Ano) === String(ano));
+      const okTxt = !txt || String(r.Curso).toLowerCase().includes(txt);
+      return okAno && okTxt;
+    });
+  }
+
+  function preencherAnos() {
+    const s = document.getElementById('filtroAnoCurso');
+    if (!s) return;
+    const curVal = s.value;
+    
+    if (!anosJaPreenchidos) {
+      const anos = [...new Set(COURSE_DATA.map(r => r.Ano))].sort((a,b) => b-a);
+      s.innerHTML = '';
+      
+      const optTodos = document.createElement('option');
+      optTodos.value = 'todos';
+      optTodos.textContent = currentLangCurso === 'en' ? 'All' : 'Todos';
+      s.appendChild(optTodos);
+
+      anos.forEach(a => { 
+        const o = document.createElement('option'); 
+        o.value = String(a); 
+        o.textContent = String(a); 
+        s.appendChild(o); 
+      });
+      anosJaPreenchidos = true;
+    } else {
+      if (s.options.length > 0) {
+        s.options[0].textContent = currentLangCurso === 'en' ? 'All' : 'Todos';
+      }
+    }
+    
+    if (curVal && [...s.options].some(o => o.value === curVal)) {
+      s.value = curVal;
+    }
+  }
+
+  function renderTabela(dados) {
+    const t = document.getElementById('tbodyCursos');
+    if (!t) return;
+    if (!dados.length) {
+      const msg = currentLangCurso === 'en'
+        ? 'No courses found for the selected filters.'
+        : 'Nenhum curso encontrado para os filtros selecionados.';
+      t.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#64748b;padding:20px;">' + msg + '</td></tr>';
+      return;
+    }
+    
+    t.innerHTML = dados.map(r => {
+      const taxa = Number(r['Taxa de Conclusão'] || 0);
+      const f = Number.isFinite(taxa) ? taxa.toFixed(1) + '%' : '—';
+      return '<tr><td>'+r.Curso+'</td><td>'+r.Ano+'</td><td>'+r.Candidatura+'</td><td>'+r.Seleção+'</td><td>'+r['Participação']+'</td><td>'+r['Conclusão']+'</td><td>'+f+'</td></tr>';
+    }).join('');
+  }
+
+  function renderGraficos(dados) {
+    const cv1 = document.getElementById('chartCandSel');
+    const cv2 = document.getElementById('chartPartConc');
+    if (!cv1 || !cv2 || typeof Chart === 'undefined') return;
+    if (chartCandSel) chartCandSel.destroy();
+    if (chartPartConc) chartPartConc.destroy();
+
+    const top = [...dados].sort((a,b) => b.Candidatura - a.Candidatura).slice(0, 10);
+    const lbl = top.map(r => r.Curso + ' (' + r.Ano + ')');
+    const tCfg = { backgroundColor: 'rgba(16,32,64,0.92)', titleFont:{size:13,weight:'bold'}, bodyFont:{size:12}, padding:10, cornerRadius:8 };
+
+    chartCandSel = new Chart(cv1, {
+      type: 'bar',
+      data: { labels: lbl, datasets: [
+        { label: getEtapaLabel('Candidatura', currentLangCurso), data: top.map(r => r.Candidatura), backgroundColor: '#2b7a9e', borderRadius: 6 },
+        { label: getEtapaLabel('Seleção', currentLangCurso), data: top.map(r => r.Seleção), backgroundColor: '#219a83', borderRadius: 6 }
+      ]},
+      options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{legend:{position:'bottom'}, tooltip:tCfg}, scales:{x:{beginAtZero:true, grid:{color:'rgba(0,0,0,0.04)'}}, y:{grid:{display:false}}} }
+    });
+
+    chartPartConc = new Chart(cv2, {
+      type: 'bar',
+      data: { labels: lbl, datasets: [
+        { label: getEtapaLabel('Participação', currentLangCurso), data: top.map(r => r['Participação']), backgroundColor: '#675ca8', borderRadius: 6 },
+        { label: getEtapaLabel('Conclusão', currentLangCurso), data: top.map(r => r['Conclusão']), backgroundColor: '#52aa60', borderRadius: 6 }
+      ]},
+      options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{legend:{position:'bottom'}, tooltip:tCfg}, scales:{x:{beginAtZero:true, grid:{color:'rgba(0,0,0,0.04)'}}, y:{grid:{display:false}}} }
+    });
+  }
+
+  function renderNota(dados) {
+    const n = document.getElementById('notaCursos');
+    if (!n) return;
+    if (!dados.length) { 
+      n.innerHTML = currentLangCurso === 'en' ? 'No data for the selected filters.' : 'Sem dados para os filtros selecionados.'; 
+      return; 
+    }
+    const tC = dados.reduce((a,r) => a + Number(r.Candidatura || 0), 0);
+    const tS = dados.reduce((a,r) => a + Number(r.Seleção || 0), 0);
+    const tP = dados.reduce((a,r) => a + Number(r['Participação'] || 0), 0);
+    const tCo = dados.reduce((a,r) => a + Number(r['Conclusão'] || 0), 0);
+    const taxa = tP > 0 ? ((tCo / tP) * 100).toFixed(1) : '0.0';
+
+    n.innerHTML = currentLangCurso === 'en'
+      ? '📌 <strong>Summary:</strong> ' + dados.length + ' course(s) · Application: <strong>' + tC + '</strong> · Selection: <strong>' + tS + '</strong> · Participation: <strong>' + tP + '</strong> · Completion: <strong>' + tCo + '</strong> · Rate: <strong>' + taxa + '%</strong>.'
+      : '📌 <strong>Resumo dos filtros:</strong> ' + dados.length + ' curso(s) · Candidatura: <strong>' + tC + '</strong> · Seleção: <strong>' + tS + '</strong> · Participação: <strong>' + tP + '</strong> · Conclusão: <strong>' + tCo + '</strong> · Taxa de Conclusão sobre Participação: <strong>' + taxa + '%</strong>.<br><br>A redução entre Candidatura e Seleção decorre da limitação de vagas, não de desistências.';
+  }
+
+  function renderCourseResults() {
+    try {
+      preencherAnos();
+      const d = filtrarDados();
+      renderTabela(d);
+      renderGraficos(d);
+      renderNota(d);
+    } catch (err) { console.error('[Cursos] ERRO:', err); }
+  }
+
+  window.renderCourseResults = renderCourseResults;
+
+  window.addEventListener('load', function () {
+    const s = document.getElementById('filtroAnoCurso');
+    const i = document.getElementById('filtroCurso');
+    const btnToggleTab = document.getElementById('toggleTabelaBtn');
+    const tabWrap = document.getElementById('tabelaWrapper');
+    const cardCandSel = document.getElementById('cardCandSel');
+    const cardPartConc = document.getElementById('cardPartConc');
+    const gridGraficos = cardCandSel ? cardCandSel.parentElement : null;
+
+    if (s) s.addEventListener('change', renderCourseResults);
+    if (i) i.addEventListener('input', renderCourseResults);
+
+    function alternarVisaoGraficoTabela() {
+      if (!tabWrap || !gridGraficos) return;
+      const mostrandoTabela = tabWrap.style.display !== 'none';
+      if (mostrandoTabela) {
+        tabWrap.style.display = 'none';
+        gridGraficos.style.display = 'grid';
+        if (chartCandSel) chartCandSel.resize();
+        if (chartPartConc) chartPartConc.resize();
+      } else {
+        tabWrap.style.display = 'block';
+        gridGraficos.style.display = 'none';
+      }
+    }
+
+    if (btnToggleTab) btnToggleTab.addEventListener('click', alternarVisaoGraficoTabela);
+
+    const pt = document.getElementById('pt');
+    const en = document.getElementById('en');
+    if (pt) {
+      const prev = pt.onclick;
+      pt.onclick = function (e) { currentLangCurso = 'pt'; if (prev) prev.call(pt, e); setTimeout(renderCourseResults, 20); };
+    }
+    if (en) {
+      const prev = en.onclick;
+      en.onclick = function (e) { currentLangCurso = 'en'; if (prev) prev.call(en, e); setTimeout(renderCourseResults, 20); };
+    }
+
+    renderCourseResults();
+  });
+})();
+</script>
+
+</body>
+</html>
